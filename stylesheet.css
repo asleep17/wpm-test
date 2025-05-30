@@ -3,12 +3,55 @@
 :root{
     --bgColor : #333;
     --text-primary: #fff;
+    --text-secondary: #666;
+    --primary-Color: #fd4;
 }
 body{
      font-family: 'Roboto', sans-serif;
      background-color: var(--bgColor);
-     color:var(--text-primary)
+     color:var(--text-primary);
+     font-size: large;
+}
+main{
+    width: 600px; 
+    margin: 50px auto;
+    
+}
+h1{
+    color: var(--primary-Color);
 }
 h1 svg {
     width: 40px;
+    fill: var(--primary-Color)
+}
+#header{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 20px 6px 30px;
+
+}
+#buttons{
+    text-align: right;
+}
+#info{
+    color:var(--primary-Color);
+
+}
+button{
+    background: rgba(255, 255, 255, .2);
+    border: 0;;
+    color: rgba(255, 255,255, .5);;
+    padding: 5px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+div#game{
+    line-height:35px;
+    height: 105px;;
+    overflow: hidden;
+}
+div.word{
+    display: inline-block;
+    font-family: 'Roboto Mono', monospace;
+    margin: 0 5px;
 }
