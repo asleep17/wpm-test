@@ -15,6 +15,25 @@ function randomWord() {
   const randomIndex = Math.ceil(Math.random() * wordsCount);
   return words[randomIndex - 1];
 }
+function removeExtraCharacters(word) {
+          const extraLetters = word.querySelectorAll('.letter.extra');
+          extraLetters.forEach(letter => {
+               word.removeChild(letter);
+            });
+        }
+// Function to reset a word to its original state
+function resetWordToOriginal(word) {
+            // Remove extra characters first
+       removeExtraCharacters(word);
+            
+            // Reset all original letters to untyped state
+            const originalLetters = word.querySelectorAll('.letter:not(.extra)');
+            originalLetters.forEach(letter => {
+                removeClass(letter, 'correct');
+                removeClass(letter, 'incorrect');
+                removeClass(letter, 'current');
+                 });
+        }
 
 function formatWord(word) {
   return `<div class="word"><span class="letter">${word.split('').join('</span><span class="letter">')}</span></div>`;
@@ -148,6 +167,7 @@ document.getElementById('game').addEventListener('keydown', function(ev) {
         addClass(letter, 'incorrect');
       });
     }
+    addClass(currentWord,'finalized');
     removeClass(currentWord, 'current');
     if (currentWord.nextSibling) {
       addClass(currentWord.nextSibling, 'current');
@@ -163,16 +183,30 @@ document.getElementById('game').addEventListener('keydown', function(ev) {
 
   if (isBackspace) {
     if (currentLetter && isFirstLetter && currentWord.previousSibling) {
-      // make prev word current, last letter current
+      // Moving back to previous word
       removeClass(currentWord, 'current');
-      addClass(currentWord.previousSibling, 'current');
+      const prevWord = currentWord.previousSibling;
+      addClass(prevWord, 'current');
       removeClass(currentLetter, 'current');
-      const prevLastLetter = currentWord.previousSibling.lastChild;
-      if (prevLastLetter) {
-        addClass(prevLastLetter, 'current');
-        removeClass(prevLastLetter, 'incorrect');
-        removeClass(prevLastLetter, 'correct');
-      }
+                
+      // If the previous word was finalized, reset it completely
+    if (prevWord.classList.contains('finalized')) {
+       resetWordToOriginal(prevWord);
+       removeClass(prevWord, 'finalized');
+        // Set cursor to first letter of the reset word
+       const firstLetter = prevWord.firstChild;
+       if (firstLetter) {
+          addClass(firstLetter, 'current');
+                  }
+              } else {
+            // Previous word wasn't finalized, just position cursor at the end
+              const prevLastLetter = prevWord.lastChild;
+              if (prevLastLetter) {
+                  addClass(prevLastLetter, 'current');
+                  removeClass(prevLastLetter, 'incorrect');
+                  removeClass(prevLastLetter, 'correct');
+                    }
+                }
     }
     else if (currentLetter && !isFirstLetter && currentLetter.previousSibling) {
       // move back one letter, invalidate letter
