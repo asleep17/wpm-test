@@ -17,6 +17,25 @@ function randomWord() {
   const randomIndex = Math.ceil(Math.random() * wordsCount);
   return words[randomIndex - 1];
 }
+function removeExtraCharacters(word) {
+          const extraLetters = word.querySelectorAll('.letter.extra');
+          extraLetters.forEach(letter => {
+               word.removeChild(letter);
+            });
+        }
+// Function to reset a word to its original state
+function resetWordToOriginal(word) {
+            // Remove extra characters first
+       removeExtraCharacters(word);
+            
+            // Reset all original letters to untyped state
+            const originalLetters = word.querySelectorAll('.letter:not(.extra)');
+            originalLetters.forEach(letter => {
+                removeClass(letter, 'correct');
+                removeClass(letter, 'incorrect');
+                removeClass(letter, 'current');
+                 });
+        }
 
 function removeExtraCharacters(word) {
   const extraLetters = word.querySelectorAll('.letter.extra');
@@ -193,7 +212,20 @@ document.getElementById('game').addEventListener('keydown', function(ev) {
           const lettersToInvalidate = [...document.querySelectorAll('.word.current .letter:not(.correct)')];
           lettersToInvalidate.forEach(letter => {
               addClass(letter, 'incorrect');
-          });
+          }
+    if (expected !== ' ') {
+      const lettersToInvalidate = [...document.querySelectorAll('.word.current .letter:not(.correct)')];
+      lettersToInvalidate.forEach(letter => {
+        addClass(letter, 'incorrect');
+      });
+    }
+    addClass(currentWord,'finalized');
+    removeClass(currentWord, 'current');
+    if (currentWord.nextSibling) {
+      addClass(currentWord.nextSibling, 'current');
+      if (currentLetter) {
+        removeClass(currentLetter, 'current');
+
       }
       addClass(currentWord, 'finalized');
       removeClass(currentWord, 'current');
@@ -224,6 +256,24 @@ document.getElementById('game').addEventListener('keydown', function(ev) {
                   addClass(firstLetter, 'current');
               }
           } else {
+    if (currentLetter && isFirstLetter && currentWord.previousSibling) {
+      // Moving back to previous word
+      removeClass(currentWord, 'current');
+      const prevWord = currentWord.previousSibling;
+      addClass(prevWord, 'current');
+      removeClass(currentLetter, 'current');
+                
+      // If the previous word was finalized, reset it completely
+    if (prevWord.classList.contains('finalized')) {
+       resetWordToOriginal(prevWord);
+       removeClass(prevWord, 'finalized');
+        // Set cursor to first letter of the reset word
+       const firstLetter = prevWord.firstChild;
+       if (firstLetter) {
+          addClass(firstLetter, 'current');
+                  }
+              } else {
+            // Previous word wasn't finalized, just position cursor at the end
               const prevLastLetter = prevWord.lastChild;
               if (prevLastLetter) {
                   addClass(prevLastLetter, 'current');
@@ -247,6 +297,24 @@ document.getElementById('game').addEventListener('keydown', function(ev) {
               removeClass(lastLetter, 'incorrect');
               removeClass(lastLetter, 'correct');
           }
+                    }
+                }
+    }
+    else if (currentLetter && !isFirstLetter && currentLetter.previousSibling) {
+      // move back one letter, invalidate letter
+      removeClass(currentLetter, 'current');
+      addClass(currentLetter.previousSibling, 'current');
+      removeClass(currentLetter.previousSibling, 'incorrect');
+      removeClass(currentLetter.previousSibling, 'correct');
+    }
+    else if (!currentLetter) {
+      const lastLetter = currentWord.lastChild;
+      if (lastLetter && lastLetter.classList.contains('extra')) {
+        currentWord.removeChild(lastLetter);
+      } else if (lastLetter) {
+        addClass(lastLetter, 'current');
+        removeClass(lastLetter, 'incorrect');
+        removeClass(lastLetter, 'correct');
       }
   }
 
