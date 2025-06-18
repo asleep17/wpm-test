@@ -24,15 +24,51 @@ h1 svg{
 }
 #header{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     margin: 20px 6px 30px;
+    align-items: center;
 }
+
+#mode-selection {
+    display: flex;
+    gap: 10px;
+}
+
+.mode-btn {
+    background: rgba(255,255,255,.1);
+    border: 2px solid var(--primaryColor);
+    color: var(--primaryColor);
+    padding: 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    background: var(--primaryColor);
+    color: var(--bgColor);
+}
+
+.mode-btn.active {
+    background: var(--primaryColor);
+    color: var(--bgColor);
+}
+
+.mode-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#info{
+    color: var(--primaryColor);
+    text-align: center;
+}
+
 #buttons{
     text-align: right;
 }
-#info{
-    color: var(--primaryColor);
-}
+
 button{
     background: rgba(255,255,255,.2);
     border:0;
